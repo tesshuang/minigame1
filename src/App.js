@@ -16,7 +16,7 @@ class App extends Component {
     }
     
     componentDidMount(){
-        this.socket = mySocket("https://assignment1-tess.herokuapp.com/");
+        this.socket = mySocket("https://gamesocket.herokuapp.com/");
         
         this.socket.on("userjoined", (data)=>{
             this.setState({
