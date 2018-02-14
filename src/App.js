@@ -18,9 +18,39 @@ class App extends Component {
         this.showDisplay = this.showDisplay.bind(this);
         this.leaveRoom = this.leaveRoom.bind(this);
     }
-    
+    componenntWillUnmount(){
+        
+    }
     componentDidMount(){
-        this.socket = mySocket("https://gamesocket.herokuapp.com/");
+
+       /* this.refs.theDisplay.addEventListener("mousemove",(ev)=>{
+            if(this.state.myId === null){
+                return false;
+            }
+            
+           this.refs["u"+this.state.myId].style.left = ev.pageX+"px";
+            this.refs["u"+this.state.myId].style.top = ev.pageY+"px";
+            
+            
+            this.socket.emit("mymove",{
+                x:ev.pageX,
+                y:ev.pageY,
+                id:this.state.myId,
+                src: this.refs["u"+this.state.myId].src
+            });
+        });*/
+    }
+    
+    handleImage(evt){
+        this.refs["u"+this.state.myId].src = evt.target.src
+    }
+    
+    showDisplay(roomString){
+        this.setState({
+           showtoggle:true 
+        });
+        
+                this.socket = mySocket("https://gamesocket.herokuapp.com/");
         
         this.socket.on("userjoined", (data)=>{
             this.setState({
@@ -56,32 +86,7 @@ class App extends Component {
             this.refs["u"+data.id].src = data.src;
             console.log(data.id);
         })
-       /* this.refs.theDisplay.addEventListener("mousemove",(ev)=>{
-            if(this.state.myId === null){
-                return false;
-            }
-            
-           this.refs["u"+this.state.myId].style.left = ev.pageX+"px";
-            this.refs["u"+this.state.myId].style.top = ev.pageY+"px";
-            
-            
-            this.socket.emit("mymove",{
-                x:ev.pageX,
-                y:ev.pageY,
-                id:this.state.myId,
-                src: this.refs["u"+this.state.myId].src
-            });
-        });*/
-    }
-    
-    handleImage(evt){
-        this.refs["u"+this.state.myId].src = evt.target.src
-    }
-    
-    showDisplay(roomString){
-        this.setState({
-           showtoggle:true 
-        });
+        
         
         this.socket.emit("joinroom", roomString);
     }
@@ -89,6 +94,7 @@ class App extends Component {
         this.setState({
            showtoggle:false 
         });
+        this.socket.disconnect();
     }
     render() {
         console.log(this.state.allusers);
