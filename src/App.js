@@ -51,7 +51,7 @@ class App extends Component {
            showtoggle:true 
         });
         
-                this.socket = mySocket("http://localhost:10000/");
+                this.socket = mySocket("https://gamesocket.herokuapp.com/");
         
         this.socket.on("userjoined", (data)=>{
             this.setState({
