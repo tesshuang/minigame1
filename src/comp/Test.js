@@ -17,7 +17,7 @@ class Test extends Component {
     }
     
     componentDidMount(){
-        this.socket = mySocket("http://localhost:10000");
+        this.socket = mySocket("https://gamesocket.herokuapp.com/");
         
         this.socket.on("newq", (data)=>{
             this.setState({
