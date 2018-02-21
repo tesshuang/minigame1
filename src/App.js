@@ -11,7 +11,8 @@ class App extends Component {
             myImg2:require("./images/img2.png"),
             allusers:[],
             myId:null,
-            showtoggle:false
+            showtoggle:false,
+            stickers:[]
         }
         
         this.handleImage = this.handleImage.bind(this);
@@ -50,7 +51,7 @@ class App extends Component {
            showtoggle:true 
         });
         
-                this.socket = mySocket("https://gamesocket.herokuapp.com/");
+                this.socket = mySocket("http://localhost:10000/");
         
         this.socket.on("userjoined", (data)=>{
             this.setState({
@@ -78,7 +79,21 @@ class App extends Component {
                     src: this.refs["u"+this.state.myId].src
                 });
             });
+            
+            this.refs.theDisplay.addEventListener("click",(ev)=>{
+               this.socket.emit("stick", {
+                   x:ev.pageX,
+                   y:ev.pageY,
+                   src: this.refs["u"+this.state.myId].src
+               }) 
+            });
         })
+        
+        this.socket.on("newsticker", (data)=>{
+            this.setState({
+                stickers:data
+            })
+        });
         
         this.socket.on("newmove",(data)=>{
             this.refs["u"+data.id].style.left = data.x+"px";
@@ -94,15 +109,25 @@ class App extends Component {
         this.setState({
            showtoggle:false 
         });
+        this.socket.emit("leaveroom");
         this.socket.disconnect();
     }
     render() {
-        console.log(this.state.allusers);
+        
+        console.log(this.state.stickers);
         var allimgs= this.state.allusers.map((obj,i)=>{
             return(
                 <img ref={"u"+obj} src={this.state.myImg} height={40} key={i} className="allImgs"/>
             )
         });
+        
+        var allstickers = this.state.stickers.map((obj, i)=>{
+            var mstyle = {left:obj.x, top:obj.y};
+            return(
+            <img style={mstyle} key={i} src={obj.src} height={50} className="allImgs" />
+            )
+            
+        })
         
         var comp = null;
         if(this.state.showtoggle === false){
@@ -112,6 +137,7 @@ class App extends Component {
             <div>
                 <div ref="theDisplay"className="whole">
                 {allimgs}
+                {allstickers}
                 </div>
                 <div className="btmright">
                     {this.state.myId}
